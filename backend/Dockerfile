@@ -10,29 +10,38 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    libicu-dev
+    libicu-dev \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        mbstring \
+        exif \
+        bcmath \
+        gd \
+        intl \
+        zip
 
-# Install Node.js
+# Node.js (agar frontend build bo‘lsa)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif bcmath gd intl zip
-
 # Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy everything first to ensure scripts are available
+# Copy project
 COPY . .
 
-# Install PHP dependencies
-RUN composer install
+# PHP deps (prod-safe)
+RUN composer install --no-dev --optimize-autoloader || composer install
 
-# Entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Laravel commands (Render’da env yo‘q payt yiqilmasin)
+RUN php artisan key:generate || true
+RUN php artisan storage:link || true
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Render PORT
+EXPOSE 10000
+
+# IMPORTANT: Render PORT’ni o‘qiydi
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
