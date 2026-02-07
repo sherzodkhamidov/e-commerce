@@ -7,16 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class Subcatalog extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
+
+    // public $translatable = ['name', 'description']; // Removed
 
     protected $fillable = [
         'catalog_id',
-        'name',
+        'name_uz',
+        'name_ru',
+        'name_eng',
         'slug',
-        'description',
+        'description_uz',
+        'description_ru',
+        'description_eng',
         'image',
         'is_active',
         'sort_order',
@@ -32,7 +39,7 @@ class Subcatalog extends Model
 
         static::creating(function ($subcatalog) {
             if (empty($subcatalog->slug)) {
-                $subcatalog->slug = Str::slug($subcatalog->name);
+                $subcatalog->slug = Str::slug($subcatalog->getTranslation('name', 'en'));
             }
         });
     }

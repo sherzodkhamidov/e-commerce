@@ -1,0 +1,229 @@
+/* Navbar Styles */
+
+/* Header Layout */
+.navbar-header {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+  line-height: 64px;
+}
+
+/* Left Section */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Brand/Logo */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 700;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.navbar-brand-icon {
+  font-size: 24px;
+}
+
+/* Desktop Navigation Menu */
+.navbar-desktop-menu {
+  display: flex;
+  justify-content: end;
+  border-bottom: none !important;
+  background: transparent !important;
+  font-size: 16px;
+  min-width: 300px;
+}
+.navbar-desktop-menu li::after {
+  border-bottom: none !important;
+}
+
+/* Selected Menu Item */
+.navbar-desktop-menu .ant-menu-item-selected {
+  color: var(--accent-primary) !important;
+}
+
+.navbar-desktop-menu .ant-menu-item-selected::after {
+  border-bottom: none !important;
+}
+
+/* Right Section */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* User Avatar */
+.navbar-user-trigger {
+  cursor: pointer;
+}
+
+/* Dropdown Links with Badge */
+.navbar-dropdown-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Drawer Footer for Auth */
+.navbar-drawer-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.navbar-drawer-auth-link {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Drawer Menu */
+.navbar-drawer-menu {
+  border-right: none !important;
+}
+
+/* Mobile Responsive - Only Logo Centered */
+@media (max-width: 768px) {
+  .navbar-header {
+    justify-content: center;
+    padding: 0 16px;
+    position: relative;
+  }
+
+  .navbar-left {
+    position: static;
+    gap: 0;
+  }
+
+  /* Hide everything except logo on mobile */
+  .navbar-desktop-menu,
+  .navbar-right,
+  .navbar-mobile-menu-btn {
+    display: none !important;
+  }
+}
+
+.flag-icon {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  vertical-align: middle;
+}
+
+/* ==================== ANT DESIGN DARK MODE OVERRIDES ==================== */
+
+/* Menu items text color */
+.navbar-desktop-menu .ant-menu-item {
+  color: var(--text-secondary) !important;
+}
+
+.navbar-desktop-menu .ant-menu-item:hover {
+  color: var(--text-primary) !important;
+}
+
+.navbar-desktop-menu .ant-menu-item a {
+  color: inherit !important;
+}
+
+/* Dropdown menu dark mode */
+.ant-dropdown .ant-dropdown-menu {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item {
+  color: var(--text-secondary) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item:hover {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item a {
+  color: inherit !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item-divider {
+  background: var(--border-color) !important;
+}
+
+/* Danger item (logout) */
+.ant-dropdown .ant-dropdown-menu-item-danger {
+  color: var(--error) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu-item-danger:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Button text colors */
+.navbar-right .ant-btn-text {
+  color: var(--text-secondary) !important;
+}
+
+.navbar-right .ant-btn-text:hover {
+  color: var(--text-primary) !important;
+  background: var(--bg-secondary) !important;
+}
+
+/* Primary button stays the same */
+.navbar-right .ant-btn-primary {
+  background: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+/* Drawer dark mode */
+.ant-drawer .ant-drawer-content {
+  background: var(--bg-card) !important;
+}
+
+.ant-drawer .ant-drawer-header {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.ant-drawer .ant-drawer-title {
+  color: var(--text-primary) !important;
+}
+
+.ant-drawer .ant-drawer-close {
+  color: var(--text-secondary) !important;
+}
+
+.navbar-drawer-menu.ant-menu {
+  background: transparent !important;
+}
+
+.navbar-drawer-menu .ant-menu-item {
+  color: var(--text-secondary) !important;
+}
+
+.navbar-drawer-menu .ant-menu-item:hover {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.navbar-drawer-menu .ant-menu-item-selected {
+  background: var(--bg-secondary) !important;
+  color: var(--accent-primary) !important;
+}
+
+.navbar-drawer-menu .ant-menu-item a {
+  color: inherit !important;
+}

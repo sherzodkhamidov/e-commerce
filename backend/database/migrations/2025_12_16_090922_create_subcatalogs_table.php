@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('subcatalogs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('catalog_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
+            $table->string('name_uz');
+            $table->string('name_ru');
+            $table->string('name_eng');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->text('description_uz')->nullable();
+            $table->text('description_ru')->nullable();
+            $table->text('description_eng')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);

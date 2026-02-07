@@ -19,33 +19,31 @@ return new class extends Migration
             $table->decimal('tax', 12, 2)->default(0);
             $table->decimal('total', 12, 2);
 
-            // Status: pending, confirmed, processing, shipped, delivered, cancelled
+            // Status: pending, processing, delivered, cancelled
             $table->enum('status', [
                 'pending',
-                'confirmed',
                 'processing',
-                'shipped',
                 'delivered',
                 'cancelled'
             ])->default('pending');
 
             // Payment
             $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
-            $table->string('payment_method')->nullable(); // payme, click, cash
+            $table->string('payment_method')->nullable(); // payme, cash
             $table->string('payment_transaction_id')->nullable();
-            $table->timestamp('paid_at')->nullable();
 
-            // Shipping info
-            $table->string('shipping_name');
-            $table->string('shipping_phone');
-            $table->text('shipping_address');
-            $table->string('shipping_city');
-            $table->string('shipping_region')->nullable();
-            $table->string('shipping_postal_code')->nullable();
+            // Shipping info (simplified)
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('phone');
+            $table->text('address');
+
+            // Location coordinates
+            $table->decimal('location_lat', 10, 8)->nullable();
+            $table->decimal('location_lng', 11, 8)->nullable();
 
             // Additional
             $table->text('notes')->nullable();
-            $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
 
             $table->timestamps();
@@ -57,4 +55,3 @@ return new class extends Migration
         Schema::dropIfExists('orders');
     }
 };
-

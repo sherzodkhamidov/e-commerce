@@ -1,0 +1,16 @@
+.homepage {
+  min-height: 100vh;
+}
+
+.homepage-loading {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .homepage {
+    padding-bottom: var(--mobile-nav-padding);
+  }
+}

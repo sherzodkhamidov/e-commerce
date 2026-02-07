@@ -19,15 +19,13 @@ class Order extends Model
         'payment_status',
         'payment_method',
         'payment_transaction_id',
-        'paid_at',
-        'shipping_name',
-        'shipping_phone',
-        'shipping_address',
-        'shipping_city',
-        'shipping_region',
-        'shipping_postal_code',
+        'first_name',
+        'last_name',
+        'phone',
+        'address',
+        'location_lat',
+        'location_lng',
         'notes',
-        'shipped_at',
         'delivered_at',
     ];
 
@@ -36,8 +34,8 @@ class Order extends Model
         'shipping_cost' => 'decimal:2',
         'tax' => 'decimal:2',
         'total' => 'decimal:2',
-        'paid_at' => 'datetime',
-        'shipped_at' => 'datetime',
+        'location_lat' => 'decimal:8',
+        'location_lng' => 'decimal:8',
         'delivered_at' => 'datetime',
     ];
 
@@ -60,13 +58,16 @@ class Order extends Model
         return "{$prefix}-{$date}-{$random}";
     }
 
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
     public function getStatusLabelAttribute(): string
     {
         return match($this->status) {
             'pending' => 'Pending',
-            'confirmed' => 'Confirmed',
             'processing' => 'Processing',
-            'shipped' => 'Shipped',
             'delivered' => 'Delivered',
             'cancelled' => 'Cancelled',
             default => $this->status,
@@ -77,13 +78,10 @@ class Order extends Model
     {
         return match($this->status) {
             'pending' => 'warning',
-            'confirmed' => 'info',
             'processing' => 'primary',
-            'shipped' => 'info',
             'delivered' => 'success',
             'cancelled' => 'danger',
             default => 'secondary',
         };
     }
 }
-

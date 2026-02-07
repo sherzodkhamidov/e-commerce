@@ -8,6 +8,10 @@ use App\Models\Product;
 use App\Models\Subcatalog;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\CatalogResource;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\SubcatalogResource;
+
 class ShopController extends Controller
 {
     public function catalogs()
@@ -17,7 +21,7 @@ class ShopController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return response()->json($catalogs);
+        return CatalogResource::collection($catalogs);
     }
 
     public function catalog(string $slug)
@@ -31,7 +35,7 @@ class ShopController extends Controller
             }])
             ->firstOrFail();
 
-        return response()->json($catalog);
+        return new CatalogResource($catalog);
     }
 
     public function subcatalogs(Request $request)
@@ -45,7 +49,7 @@ class ShopController extends Controller
             $query->where('catalog_id', $request->catalog_id);
         }
 
-        return response()->json($query->get());
+        return SubcatalogResource::collection($query->get());
     }
 
     public function subcatalog(string $slug)
@@ -55,7 +59,7 @@ class ShopController extends Controller
             ->with('catalog')
             ->firstOrFail();
 
-        return response()->json($subcatalog);
+        return new SubcatalogResource($subcatalog);
     }
 
     public function products(Request $request)
@@ -83,8 +87,13 @@ class ShopController extends Controller
         // Search
         if ($request->has('search') && !empty($request->search)) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%');
+                $search = $request->search;
+                $q->where('name_uz', 'like', '%' . $search . '%')
+                    ->orWhere('name_ru', 'like', '%' . $search . '%')
+                    ->orWhere('name_eng', 'like', '%' . $search . '%')
+                    ->orWhere('description_uz', 'like', '%' . $search . '%')
+                    ->orWhere('description_ru', 'like', '%' . $search . '%')
+                    ->orWhere('description_eng', 'like', '%' . $search . '%');
             });
         }
 
@@ -111,10 +120,10 @@ class ShopController extends Controller
         }
 
         // Pagination
-        $perPage = $request->get('per_page', 12);
+        $perPage = $request->get('per_page', config('ecommerce.pagination.products_per_page'));
         $products = $query->paginate($perPage);
 
-        return response()->json($products);
+        return ProductResource::collection($products);
     }
 
     public function product(string $slug)
@@ -128,12 +137,12 @@ class ShopController extends Controller
         $relatedProducts = Product::where('subcatalog_id', $product->subcatalog_id)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
-            ->limit(4)
+            ->limit(config('ecommerce.pagination.related_products_limit'))
             ->get();
 
         return response()->json([
-            'product' => $product,
-            'related_products' => $relatedProducts,
+            'product' => new ProductResource($product),
+            'related_products' => ProductResource::collection($relatedProducts),
         ]);
     }
 
@@ -143,10 +152,10 @@ class ShopController extends Controller
             ->where('is_featured', true)
             ->with(['subcatalog.catalog'])
             ->orderBy('sort_order')
-            ->limit(8)
+            ->limit(config('ecommerce.pagination.featured_products_limit'))
             ->get();
 
-        return response()->json($products);
+        return ProductResource::collection($products);
     }
 }
 

@@ -17,7 +17,7 @@ class OrderController extends Controller
             ->orders()
             ->with(['items.product'])
             ->latest()
-            ->paginate(10);
+            ->paginate(config('ecommerce.pagination.orders_per_page'));
 
         return response()->json($orders);
     }
@@ -37,12 +37,12 @@ class OrderController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'shipping_name' => 'required|string|max:255',
-            'shipping_phone' => 'required|string|max:20',
-            'shipping_address' => 'required|string|max:500',
-            'shipping_city' => 'required|string|max:100',
-            'shipping_region' => 'nullable|string|max:100',
-            'shipping_postal_code' => 'nullable|string|max:20',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:500',
+            'location_lat' => 'nullable|numeric|between:-90,90',
+            'location_lng' => 'nullable|numeric|between:-180,180',
             'payment_method' => 'required|in:payme,cash',
             'notes' => 'nullable|string|max:500',
         ]);
@@ -71,8 +71,8 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $subtotal = $cart->total;
-            $shippingCost = 0; // Free shipping for now
-            $tax = 0;
+            $shippingCost = config('ecommerce.shipping.default_shipping_cost');
+            $tax = config('ecommerce.shipping.default_tax_rate');
             $total = $subtotal + $shippingCost + $tax;
 
             // Create order
@@ -86,21 +86,27 @@ class OrderController extends Controller
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $request->payment_method,
-                'shipping_name' => $request->shipping_name,
-                'shipping_phone' => $request->shipping_phone,
-                'shipping_address' => $request->shipping_address,
-                'shipping_city' => $request->shipping_city,
-                'shipping_region' => $request->shipping_region,
-                'shipping_postal_code' => $request->shipping_postal_code,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'location_lat' => $request->location_lat,
+                'location_lng' => $request->location_lng,
                 'notes' => $request->notes,
             ]);
 
             // Create order items and update stock
             foreach ($cart->items as $item) {
+                // Use English name for permanent order record (fallback to other languages if needed)
+                $productName = $item->product->name_eng 
+                    ?? $item->product->name_uz 
+                    ?? $item->product->name_ru 
+                    ?? 'Unknown Product';
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
-                    'product_name' => $item->product->name,
+                    'product_name' => $productName,
                     'product_sku' => $item->product->sku,
                     'price' => $item->product->price,
                     'quantity' => $item->quantity,
@@ -141,7 +147,7 @@ class OrderController extends Controller
         }
 
         // Only pending orders can be cancelled
-        if (!in_array($order->status, ['pending', 'confirmed'])) {
+        if ($order->status !== 'pending') {
             return response()->json([
                 'message' => 'Order cannot be cancelled',
             ], 422);
@@ -175,4 +181,3 @@ class OrderController extends Controller
         }
     }
 }
-

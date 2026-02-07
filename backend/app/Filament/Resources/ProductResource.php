@@ -5,42 +5,90 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use App\Models\Subcatalog;
-use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components as Schemas;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Schema;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use UnitEnum;
 
 class ProductResource extends Resource
 {
+    // use Translatable;
+
     protected static ?string $model = Product::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-shopping-bag';
+    // protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Shop';
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-shopping-bag';
+    }
+
+    // protected static $navigationGroup = 'Shop';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Shop';
+    }
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return $schema
+        return $form
             ->columns(3)
-            ->components([
-                Schemas\Group::make()
+            ->schema([
+                Forms\Components\Group::make()
                     ->schema([
-                        Schemas\Section::make('Product Information')
+                        Forms\Components\Tabs::make('Translations')
+                            ->tabs([
+                                Forms\Components\Tabs\Tab::make('Uzbek')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name_uz')
+                                            ->label('Name (UZ)')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                                        Forms\Components\Textarea::make('short_description_uz')
+                                            ->label('Short Description (UZ)')
+                                            ->rows(2),
+                                        Forms\Components\RichEditor::make('description_uz')
+                                            ->label('Description (UZ)'),
+                                    ]),
+                                Forms\Components\Tabs\Tab::make('Russian')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name_ru')
+                                            ->label('Name (RU)')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\Textarea::make('short_description_ru')
+                                            ->label('Short Description (RU)')
+                                            ->rows(2),
+                                        Forms\Components\RichEditor::make('description_ru')
+                                            ->label('Description (RU)'),
+                                    ]),
+                                Forms\Components\Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name_eng')
+                                            ->label('Name (ENG)')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\Textarea::make('short_description_eng')
+                                            ->label('Short Description (ENG)')
+                                            ->rows(2),
+                                        Forms\Components\RichEditor::make('description_eng')
+                                            ->label('Description (ENG)'),
+                                    ]),
+                            ])->columnSpanFull(),
+
+                        Forms\Components\Section::make('Product Information')
                             ->schema([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\TextInput::make('slug')
                                     ->required()
                                     ->maxLength(255)
@@ -49,19 +97,14 @@ class ProductResource extends Resource
                                     ->label('Subcatalog')
                                     ->options(function () {
                                         return Subcatalog::with('catalog')->get()->mapWithKeys(function ($subcatalog) {
-                                            return [$subcatalog->id => $subcatalog->catalog->name . ' → ' . $subcatalog->name];
+                                            return [$subcatalog->id => $subcatalog->catalog->name_eng . ' → ' . $subcatalog->name_eng];
                                         });
                                     })
                                     ->required()
                                     ->searchable(),
-                                Forms\Components\Textarea::make('short_description')
-                                    ->rows(2)
-                                    ->columnSpanFull(),
-                                Forms\Components\RichEditor::make('description')
-                                    ->columnSpanFull(),
                             ])->columns(2),
 
-                        Schemas\Section::make('Images')
+                        Forms\Components\Section::make('Images')
                             ->schema([
                                 Forms\Components\FileUpload::make('image')
                                     ->image()
@@ -75,9 +118,9 @@ class ProductResource extends Resource
                             ])->columns(2),
                     ])->columnSpan(['lg' => 2]),
 
-                Schemas\Group::make()
+                Forms\Components\Group::make()
                     ->schema([
-                        Schemas\Section::make('Pricing')
+                        Forms\Components\Section::make('Pricing')
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->required()
@@ -91,7 +134,7 @@ class ProductResource extends Resource
                                     ->label('Compare at Price'),
                             ]),
 
-                        Schemas\Section::make('Inventory')
+                        Forms\Components\Section::make('Inventory')
                             ->schema([
                                 Forms\Components\TextInput::make('sku')
                                     ->label('SKU')
@@ -103,7 +146,7 @@ class ProductResource extends Resource
                                     ->minValue(0),
                             ]),
 
-                        Schemas\Section::make('Status')
+                        Forms\Components\Section::make('Status')
                             ->schema([
                                 Forms\Components\Toggle::make('is_active')
                                     ->label('Active')
@@ -124,11 +167,13 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->square(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('name_eng')
+                    ->label('Name')
+                    ->searchable(['name_uz', 'name_ru', 'name_eng'])
                     ->sortable()
                     ->limit(30),
-                Tables\Columns\TextColumn::make('subcatalog.name')
+                Tables\Columns\TextColumn::make('subcatalog.name_eng')
+                    ->label('Subcatalog')
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
@@ -158,17 +203,17 @@ class ProductResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('subcatalog')
-                    ->relationship('subcatalog', 'name'),
+                    ->relationship('subcatalog', 'name_eng'),
                 Tables\Filters\TernaryFilter::make('is_active'),
                 Tables\Filters\TernaryFilter::make('is_featured'),
             ])
             ->actions([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

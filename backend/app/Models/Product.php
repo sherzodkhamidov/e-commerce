@@ -6,17 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
+
+    // public $translatable = ['name', 'description', 'short_description']; // Removed
 
     protected $fillable = [
         'subcatalog_id',
-        'name',
+        'name_uz',
+        'name_ru',
+        'name_eng',
         'slug',
-        'description',
-        'short_description',
+        'description_uz',
+        'description_ru',
+        'description_eng',
+        'short_description_uz',
+        'short_description_ru',
+        'short_description_eng',
         'price',
         'old_price',
         'sku',
@@ -42,7 +51,7 @@ class Product extends Model
 
         static::creating(function ($product) {
             if (empty($product->slug)) {
-                $product->slug = Str::slug($product->name);
+                $product->slug = Str::slug($product->getTranslation('name', 'en'));
             }
             if (empty($product->sku)) {
                 $product->sku = 'SKU-' . strtoupper(Str::random(8));

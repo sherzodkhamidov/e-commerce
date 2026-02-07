@@ -34,7 +34,7 @@ class CartController extends Controller
     public function add(Request $request, Product $product): JsonResponse
     {
         $request->validate([
-            'quantity' => 'integer|min:1|max:99',
+            'quantity' => 'integer|min:' . config('ecommerce.cart.min_quantity') . '|max:' . config('ecommerce.cart.max_quantity_per_item'),
         ]);
 
         $quantity = $request->input('quantity', 1);
@@ -87,7 +87,7 @@ class CartController extends Controller
         }
 
         $request->validate([
-            'quantity' => 'required|integer|min:1|max:99',
+            'quantity' => 'required|integer|min:' . config('ecommerce.cart.min_quantity') . '|max:' . config('ecommerce.cart.max_quantity_per_item'),
         ]);
 
         $quantity = $request->input('quantity');

@@ -4,46 +4,85 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CatalogResource\Pages;
 use App\Models\Catalog;
-use BackedEnum;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components as Schemas;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Schema;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use UnitEnum;
 
 class CatalogResource extends Resource
 {
+    // use Translatable; // Removed
+
     protected static ?string $model = Catalog::class;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-squares-2x2';
+    // protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Shop';
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-squares-2x2';
+    }
+
+    // protected static $navigationGroup = 'Shop';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Shop';
+    }
 
     protected static ?int $navigationSort = 1;
 
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return $schema
-            ->components([
-                Schemas\Section::make()
+        return $form
+            ->schema([
+                Forms\Components\Tabs::make('Translations')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('Uzbek')
+                            ->schema([
+                                Forms\Components\TextInput::make('name_uz')
+                                    ->label('Name (UZ)')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
+                                Forms\Components\Textarea::make('description_uz')
+                                    ->label('Description (UZ)')
+                                    ->rows(3),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Russian')
+                            ->schema([
+                                Forms\Components\TextInput::make('name_ru')
+                                    ->label('Name (RU)')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\Textarea::make('description_ru')
+                                    ->label('Description (RU)')
+                                    ->rows(3),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('English')
+                            ->schema([
+                                Forms\Components\TextInput::make('name_eng')
+                                    ->label('Name (ENG)')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\Textarea::make('description_eng')
+                                    ->label('Description (ENG)')
+                                    ->rows(3),
+                            ]),
+                    ])->columnSpanFull(),
+
+                Forms\Components\Section::make('General Info')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
-                        Forms\Components\Textarea::make('description')
-                            ->rows(3)
-                            ->columnSpanFull(),
                         Forms\Components\FileUpload::make('image')
                             ->image()
                             ->directory('catalogs')
@@ -55,6 +94,7 @@ class CatalogResource extends Resource
                             ->default(0),
                     ])->columns(2),
             ]);
+
     }
 
     public static function table(Table $table): Table
@@ -63,8 +103,9 @@ class CatalogResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
                     ->square(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('name_eng')
+                    ->label('Name')
+                    ->searchable(['name_uz', 'name_ru', 'name_eng'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
@@ -84,12 +125,12 @@ class CatalogResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('sort_order');

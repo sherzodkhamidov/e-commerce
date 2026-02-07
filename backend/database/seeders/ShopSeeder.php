@@ -6,232 +6,187 @@ use App\Models\Catalog;
 use App\Models\Product;
 use App\Models\Subcatalog;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 
 class ShopSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Create Catalogs
-        $electronics = Catalog::create([
-            'name' => 'Electronics',
-            'slug' => 'electronics',
-            'description' => 'Latest electronic devices and gadgets',
-            'image' => 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400',
-            'is_active' => true,
-            'sort_order' => 1,
-        ]);
+        $faker = Faker::create();
 
-        $fashion = Catalog::create([
-            'name' => 'Fashion',
-            'slug' => 'fashion',
-            'description' => 'Trendy clothing and accessories',
-            'image' => 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400',
-            'is_active' => true,
-            'sort_order' => 2,
-        ]);
-
-        $home = Catalog::create([
-            'name' => 'Home & Garden',
-            'slug' => 'home-garden',
-            'description' => 'Everything for your home',
-            'image' => 'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400',
-            'is_active' => true,
-            'sort_order' => 3,
-        ]);
-
-        // Create Subcatalogs for Electronics
-        $phones = Subcatalog::create([
-            'catalog_id' => $electronics->id,
-            'name' => 'Smartphones',
-            'slug' => 'smartphones',
-            'description' => 'Latest smartphones from top brands',
-            'image' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-            'is_active' => true,
-            'sort_order' => 1,
-        ]);
-
-        $laptops = Subcatalog::create([
-            'catalog_id' => $electronics->id,
-            'name' => 'Laptops',
-            'slug' => 'laptops',
-            'description' => 'Powerful laptops for work and play',
-            'image' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-            'is_active' => true,
-            'sort_order' => 2,
-        ]);
-
-        $audio = Subcatalog::create([
-            'catalog_id' => $electronics->id,
-            'name' => 'Audio',
-            'slug' => 'audio',
-            'description' => 'Headphones, speakers and more',
-            'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-            'is_active' => true,
-            'sort_order' => 3,
-        ]);
-
-        // Create Subcatalogs for Fashion
-        $menClothing = Subcatalog::create([
-            'catalog_id' => $fashion->id,
-            'name' => "Men's Clothing",
-            'slug' => 'mens-clothing',
-            'description' => 'Stylish clothing for men',
-            'image' => 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400',
-            'is_active' => true,
-            'sort_order' => 1,
-        ]);
-
-        $womenClothing = Subcatalog::create([
-            'catalog_id' => $fashion->id,
-            'name' => "Women's Clothing",
-            'slug' => 'womens-clothing',
-            'description' => 'Beautiful clothing for women',
-            'image' => 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400',
-            'is_active' => true,
-            'sort_order' => 2,
-        ]);
-
-        // Create Subcatalogs for Home & Garden
-        $furniture = Subcatalog::create([
-            'catalog_id' => $home->id,
-            'name' => 'Furniture',
-            'slug' => 'furniture',
-            'description' => 'Quality furniture for every room',
-            'image' => 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
-            'is_active' => true,
-            'sort_order' => 1,
-        ]);
-
-        // Create 10 Products
-        $products = [
+        $catalogsData = [
             [
-                'subcatalog_id' => $phones->id,
-                'name' => 'iPhone 15 Pro Max',
-                'slug' => 'iphone-15-pro-max',
-                'short_description' => 'The most powerful iPhone ever with A17 Pro chip',
-                'description' => '<p>Experience the future with iPhone 15 Pro Max. Featuring the revolutionary A17 Pro chip, a stunning 48MP camera system, and the new Action button. Built with aerospace-grade titanium for a lightweight yet durable design.</p><ul><li>6.7-inch Super Retina XDR display</li><li>A17 Pro chip with 6-core GPU</li><li>48MP main camera with 5x optical zoom</li><li>USB-C with USB 3 speeds</li></ul>',
-                'price' => 1199.00,
-                'old_price' => 1299.00,
-                'stock' => 50,
-                'image' => 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600',
-                'is_featured' => true,
+                'name' => ['en' => 'Electronics', 'ru' => 'Электроника', 'uz' => 'Elektronika'],
+                'image' => 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80',
+                'description' => ['en' => 'Latest gadgets and tech', 'ru' => 'Новейшие гаджеты и технологии', 'uz' => 'Eng so\'nggi gadjetlar va texnologiyalar'],
+                'subs' => [
+                    ['name' => ['en' => 'Smartphones', 'ru' => 'Смартфоны', 'uz' => 'Smartfonlar'], 'image' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80'],
+                    ['name' => ['en' => 'Laptops', 'ru' => 'Ноутбуки', 'uz' => 'Noutbuklar'], 'image' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80'],
+                    ['name' => ['en' => 'Audio & Headphones', 'ru' => 'Аудио и Наушники', 'uz' => 'Audio va Quloqchinlar'], 'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80'],
+                    ['name' => ['en' => 'Cameras', 'ru' => 'Камеры', 'uz' => 'Kameralar'], 'image' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80'],
+                    ['name' => ['en' => 'Gaming Consoles', 'ru' => 'Игровые приставки', 'uz' => 'O\'yin konsollari'], 'image' => 'https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=500&q=80'],
+                    ['name' => ['en' => 'Smart Home', 'ru' => 'Умный дом', 'uz' => 'Aqlli uy'], 'image' => 'https://images.unsplash.com/photo-1558002038-1091a1661fcc?w=500&q=80'],
+                    ['name' => ['en' => 'Wearables', 'ru' => 'Носимая электроника', 'uz' => 'Taqiladigan qurilmalar'], 'image' => 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&q=80'],
+                ]
             ],
             [
-                'subcatalog_id' => $phones->id,
-                'name' => 'Samsung Galaxy S24 Ultra',
-                'slug' => 'samsung-galaxy-s24-ultra',
-                'short_description' => 'AI-powered smartphone with S Pen',
-                'description' => '<p>Meet Galaxy S24 Ultra, the ultimate smartphone powered by Galaxy AI. Features a built-in S Pen, a stunning 200MP camera, and titanium frame design.</p><ul><li>6.8-inch Dynamic AMOLED 2X display</li><li>Snapdragon 8 Gen 3 processor</li><li>200MP main camera</li><li>5000mAh battery</li></ul>',
-                'price' => 1299.00,
-                'old_price' => null,
-                'stock' => 35,
-                'image' => 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600',
-                'is_featured' => true,
+                'name' => ['en' => 'Fashion', 'ru' => 'Мода', 'uz' => 'Moda'],
+                'image' => 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=80',
+                'description' => ['en' => 'Trendy clothing for all', 'ru' => 'Модная одежда для всех', 'uz' => 'Hamma uchun zamonaviy kiyimlar'],
+                'subs' => [
+                    ['name' => ['en' => "Men's Clothing", 'ru' => 'Мужская одеждка', 'uz' => 'Erkaklar kiyimlari'], 'image' => 'https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=500&q=80'],
+                    ['name' => ['en' => "Women's Clothing", 'ru' => 'Женская одежда', 'uz' => 'Ayollar kiyimlari'], 'image' => 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=500&q=80'],
+                    ['name' => ['en' => 'Shoes', 'ru' => 'Обувь', 'uz' => 'Poyabzallar'], 'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80'],
+                    ['name' => ['en' => 'Bags & Purses', 'ru' => 'Сумки и кошельки', 'uz' => 'Sumkalar va hamyonlar'], 'image' => 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80'],
+                    ['name' => ['en' => 'Accessories', 'ru' => 'Аксессуары', 'uz' => 'Aksessuarlar'], 'image' => 'https://images.unsplash.com/photo-1511556820780-d912e42b4980?w=500&q=80'],
+                    ['name' => ['en' => 'Watches', 'ru' => 'Часы', 'uz' => 'Soatlar'], 'image' => 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80'],
+                    ['name' => ['en' => 'Eyewear', 'ru' => 'Очки', 'uz' => 'Ko\'zoynaklar'], 'image' => 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&q=80'],
+                ]
             ],
             [
-                'subcatalog_id' => $laptops->id,
-                'name' => 'MacBook Pro 16" M3 Max',
-                'slug' => 'macbook-pro-16-m3-max',
-                'short_description' => 'Supercharged for pros with M3 Max chip',
-                'description' => '<p>The most powerful MacBook Pro ever. With the M3 Max chip, you can tackle intensive workflows like never before. Features Liquid Retina XDR display with extreme dynamic range.</p><ul><li>16.2-inch Liquid Retina XDR display</li><li>M3 Max chip up to 16-core CPU, 40-core GPU</li><li>Up to 128GB unified memory</li><li>Up to 22 hours battery life</li></ul>',
-                'price' => 3499.00,
-                'old_price' => 3699.00,
-                'stock' => 20,
-                'image' => 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600',
-                'is_featured' => true,
+                'name' => ['en' => 'Home & Garden', 'ru' => 'Дом и Сад', 'uz' => "Uy va Bog'"],
+                'image' => 'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=500&q=80',
+                'description' => ['en' => 'Decor and furniture', 'ru' => 'Декор и мебель', 'uz' => 'Dekor va mebellar'],
+                'subs' => [
+                    ['name' => ['en' => 'Furniture', 'ru' => 'Мебель', 'uz' => 'Mebel'], 'image' => 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&q=80'],
+                    ['name' => ['en' => 'Kitchen & Dining', 'ru' => 'Кухня и столовая', 'uz' => 'Oshxona buyumlari'], 'image' => 'https://images.unsplash.com/photo-1556910103-1c02745a30bf?w=500&q=80'],
+                    ['name' => ['en' => 'Bedding', 'ru' => 'Постельные принадлежности', 'uz' => 'Choyshablar'], 'image' => 'https://images.unsplash.com/photo-1505693416388-b0346efee535?w=500&q=80'],
+                    ['name' => ['en' => 'Lighting', 'ru' => 'Освещение', 'uz' => 'Yoritish'], 'image' => 'https://images.unsplash.com/photo-1513506003011-3b03c80165bd?w=500&q=80'],
+                    ['name' => ['en' => 'Wall Art', 'ru' => 'Настенный декор', 'uz' => 'Devor san\'ati'], 'image' => 'https://images.unsplash.com/photo-1582562124811-c8026933ca8a?w=500&q=80'],
+                    ['name' => ['en' => 'Garden Tools', 'ru' => 'Садовые инструменты', 'uz' => 'Bog\' asboblari'], 'image' => 'https://images.unsplash.com/photo-1416879895691-30ada86a6af2?w=500&q=80'],
+                    ['name' => ['en' => 'Indoor Plants', 'ru' => 'Комнатные растения', 'uz' => 'Xona o\'simliklari'], 'image' => 'https://images.unsplash.com/photo-1459156212016-c812468e2115?w=500&q=80'],
+                ]
             ],
             [
-                'subcatalog_id' => $laptops->id,
-                'name' => 'Dell XPS 15',
-                'slug' => 'dell-xps-15',
-                'short_description' => 'Premium Windows laptop with OLED display',
-                'description' => '<p>The Dell XPS 15 combines stunning design with powerful performance. Features a virtually borderless InfinityEdge display and premium materials.</p><ul><li>15.6-inch 3.5K OLED touchscreen</li><li>13th Gen Intel Core i7</li><li>NVIDIA GeForce RTX 4060</li><li>32GB RAM, 1TB SSD</li></ul>',
-                'price' => 1899.00,
-                'old_price' => 2199.00,
-                'stock' => 25,
-                'image' => 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600',
-                'is_featured' => false,
+                'name' => ['en' => 'Health & Beauty', 'ru' => 'Красота и Здоровье', 'uz' => 'Go\'zallik va Salomatlik'],
+                'image' => 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500&q=80',
+                'description' => ['en' => 'Skincare and makeup', 'ru' => 'Уход за кожей и макияж', 'uz' => 'Teri parvarishi va pardoz'],
+                'subs' => [
+                    ['name' => ['en' => 'Skincare', 'ru' => 'Уход за кожей', 'uz' => 'Teri parvarishi'], 'image' => 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500&q=80'],
+                    ['name' => ['en' => 'Makeup', 'ru' => 'Макияж', 'uz' => 'Pardoz'], 'image' => 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=500&q=80'],
+                    ['name' => ['en' => 'Fragrance', 'ru' => 'Парфюмерия', 'uz' => 'Atirlar'], 'image' => 'https://images.unsplash.com/photo-1594035910387-fea477942698?w=500&q=80'],
+                    ['name' => ['en' => 'Hair Care', 'ru' => 'Уход за волосами', 'uz' => 'Soch parvarishi'], 'image' => 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=500&q=80'],
+                    ['name' => ['en' => 'Personal Care', 'ru' => 'Личная гигиена', 'uz' => 'Shaxsiy gigiena'], 'image' => 'https://images.unsplash.com/photo-1556217475-132d73f1d8bb?w=500&q=80'],
+                ]
             ],
             [
-                'subcatalog_id' => $audio->id,
-                'name' => 'Sony WH-1000XM5',
-                'slug' => 'sony-wh-1000xm5',
-                'short_description' => 'Industry-leading noise canceling headphones',
-                'description' => '<p>Experience exceptional sound quality with industry-leading noise cancellation. The WH-1000XM5 features Auto NC Optimizer and Speak-to-Chat for seamless communication.</p><ul><li>30-hour battery life</li><li>Multi-point connection</li><li>Ultra-comfortable design</li><li>Premium call quality</li></ul>',
-                'price' => 349.00,
-                'old_price' => 399.00,
-                'stock' => 100,
-                'image' => 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600',
-                'is_featured' => true,
+                'name' => ['en' => 'Sports & Outdoors', 'ru' => 'Спорт и Отдых', 'uz' => 'Sport va Hordiq'],
+                'image' => 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=500&q=80',
+                'description' => ['en' => 'Gear for your active life', 'ru' => 'Снаряжение для активной жизни', 'uz' => 'Faol hayot uchun jihozlar'],
+                'subs' => [
+                    ['name' => ['en' => 'Fitness Equipment', 'ru' => 'Фитнес оборудование', 'uz' => 'Fitnes jihozlari'], 'image' => 'https://images.unsplash.com/photo-1538805060512-e2d988d42051?w=500&q=80'],
+                    ['name' => ['en' => 'Cycling', 'ru' => 'Велоспорт', 'uz' => 'Velosport'], 'image' => 'https://images.unsplash.com/photo-1485965120184-e224f723d62b?w=500&q=80'],
+                    ['name' => ['en' => 'Camping', 'ru' => 'Кемпинг', 'uz' => 'Kemping'], 'image' => 'https://images.unsplash.com/photo-1504280390367-361c6d93384f?w=500&q=80'],
+                    ['name' => ['en' => 'Team Sports', 'ru' => 'Командные виды спорта', 'uz' => 'Jamoaviy sport turlari'], 'image' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=80'],
+                    ['name' => ['en' => 'Running', 'ru' => 'Бег', 'uz' => 'Yugurish'], 'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80'],
+                ]
             ],
             [
-                'subcatalog_id' => $audio->id,
-                'name' => 'AirPods Pro 2nd Gen',
-                'slug' => 'airpods-pro-2nd-gen',
-                'short_description' => 'Adaptive Audio and USB-C charging',
-                'description' => '<p>AirPods Pro now with Adaptive Audio, Personalized Spatial Audio, and USB-C charging. Features up to 2x more Active Noise Cancellation.</p><ul><li>H2 chip for smarter noise cancellation</li><li>Adaptive Audio mode</li><li>Conversation Awareness</li><li>MagSafe Charging Case with speaker</li></ul>',
-                'price' => 249.00,
-                'old_price' => null,
-                'stock' => 150,
-                'image' => 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600',
-                'is_featured' => false,
+                'name' => ['en' => 'Tools & Hardware', 'ru' => 'Инструменты', 'uz' => 'Asboblar'],
+                'image' => 'https://images.unsplash.com/photo-1581242163695-19d0acacd468?w=500&q=80',
+                'description' => ['en' => 'Build and repair', 'ru' => 'Строительство и ремонт', 'uz' => 'Qurilish va ta\'mirlash'],
+                'subs' => [
+                    ['name' => ['en' => 'Power Tools', 'ru' => 'Электроинструменты', 'uz' => 'Elektr asboblari'], 'image' => 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&q=80'],
+                    ['name' => ['en' => 'Hand Tools', 'ru' => 'Ручные инструменты', 'uz' => 'Qo\'l asboblari'], 'image' => 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=500&q=80'],
+                    ['name' => ['en' => 'Safety Gear', 'ru' => 'Защитная экипировка', 'uz' => 'Himoya vositalari'], 'image' => 'https://images.unsplash.com/photo-1557008127-18f430588661?w=500&q=80'],
+                ]
             ],
-            [
-                'subcatalog_id' => $menClothing->id,
-                'name' => 'Premium Wool Blazer',
-                'slug' => 'premium-wool-blazer',
-                'short_description' => 'Classic fit wool blazer for every occasion',
-                'description' => '<p>Elevate your style with this premium wool blazer. Crafted from fine Italian wool with a classic fit that suits both business and casual occasions.</p><ul><li>100% Italian wool</li><li>Classic fit</li><li>Two-button closure</li><li>Interior pockets</li></ul>',
-                'price' => 299.00,
-                'old_price' => 399.00,
-                'stock' => 45,
-                'image' => 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600',
-                'is_featured' => false,
+             [
+                'name' => ['en' => 'Jewelry & Watches', 'ru' => 'Украшения и Часы', 'uz' => 'Zargarlik va Soatlar'],
+                'image' => 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?w=500&q=80',
+                'description' => ['en' => 'Sparkle and shine', 'ru' => 'Блеск и сияние', 'uz' => 'Yorqinlik va go\'zallik'],
+                'subs' => [
+                    ['name' => ['en' => 'Necklaces', 'ru' => 'Ожерелья', 'uz' => 'Marjonlar'], 'image' => 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=500&q=80'],
+                    ['name' => ['en' => 'Rings', 'ru' => 'Кольца', 'uz' => 'Uzuklar'], 'image' => 'https://images.unsplash.com/photo-1605100804763-eb9749a79798?w=500&q=80'],
+                    ['name' => ['en' => "Women's Watches", 'ru' => 'Женские часы', 'uz' => "Ayollar soatlari"], 'image' => 'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=500&q=80'],
+                ]
             ],
-            [
-                'subcatalog_id' => $womenClothing->id,
-                'name' => 'Silk Evening Dress',
-                'slug' => 'silk-evening-dress',
-                'short_description' => 'Elegant silk dress for special occasions',
-                'description' => '<p>Make a statement with this stunning silk evening dress. Features a flattering A-line silhouette and delicate pleating detail.</p><ul><li>100% mulberry silk</li><li>A-line silhouette</li><li>Hidden back zipper</li><li>Fully lined</li></ul>',
-                'price' => 450.00,
-                'old_price' => 599.00,
-                'stock' => 30,
-                'image' => 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600',
-                'is_featured' => true,
+             [
+                'name' => ['en' => 'Art & Crafts', 'ru' => 'Искусство и Ремесла', 'uz' => 'San\'at va Hunarmandchilik'],
+                'image' => 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80',
+                'description' => ['en' => 'Unleash your creativity', 'ru' => 'Раскройте свой творческий потенциал', 'uz' => 'O\'z ijodingizni namoyish eting'],
+                'subs' => [
+                    ['name' => ['en' => 'Painting', 'ru' => 'Живопись', 'uz' => 'Rassomlik'], 'image' => 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80'],
+                    ['name' => ['en' => 'Drawing', 'ru' => 'Рисование', 'uz' => 'Chizmachilik'], 'image' => 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80'],
+                    ['name' => ['en' => 'Knitting', 'ru' => 'Вязание', 'uz' => 'To\'qimachilik'], 'image' => 'https://images.unsplash.com/photo-1605111718873-4f932dc7c258?w=500&q=80'],
+                ]
             ],
-            [
-                'subcatalog_id' => $furniture->id,
-                'name' => 'Modern Sectional Sofa',
-                'slug' => 'modern-sectional-sofa',
-                'short_description' => 'L-shaped sectional with premium fabric',
-                'description' => '<p>Transform your living room with this modern sectional sofa. Features high-density foam cushions and durable fabric upholstery.</p><ul><li>Premium polyester fabric</li><li>Reversible chaise</li><li>Solid wood frame</li><li>Easy assembly</li></ul>',
-                'price' => 1299.00,
-                'old_price' => 1599.00,
-                'stock' => 15,
-                'image' => 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600',
-                'is_featured' => true,
-            ],
-            [
-                'subcatalog_id' => $furniture->id,
-                'name' => 'Scandinavian Desk Chair',
-                'slug' => 'scandinavian-desk-chair',
-                'short_description' => 'Ergonomic office chair with modern design',
-                'description' => '<p>Work in comfort and style with this Scandinavian-inspired desk chair. Features adjustable height and lumbar support for all-day comfort.</p><ul><li>Breathable mesh back</li><li>Adjustable lumbar support</li><li>360° swivel</li><li>Weight capacity: 300 lbs</li></ul>',
-                'price' => 249.00,
-                'old_price' => 299.00,
-                'stock' => 60,
-                'image' => 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=600',
-                'is_featured' => false,
-            ],
+            // Add more as needed...
         ];
 
-        foreach ($products as $productData) {
-            Product::create($productData);
+        $catalogCounter = 1;
+
+        foreach ($catalogsData as $catData) {
+            $catalog = Catalog::create([
+                'name_uz' => $catData['name']['uz'],
+                'name_ru' => $catData['name']['ru'],
+                'name_eng' => $catData['name']['en'],
+                'slug' => Str::slug($catData['name']['en']),
+                'description_uz' => $catData['description']['uz'],
+                'description_ru' => $catData['description']['ru'],
+                'description_eng' => $catData['description']['en'],
+                'image' => $catData['image'],
+                'is_active' => true,
+                'sort_order' => $catalogCounter++,
+            ]);
+
+            $subOrder = 1;
+            foreach ($catData['subs'] as $subData) {
+                $sub = Subcatalog::create([
+                    'catalog_id' => $catalog->id,
+                    'name_uz' => $subData['name']['uz'],
+                    'name_ru' => $subData['name']['ru'],
+                    'name_eng' => $subData['name']['en'],
+                    'slug' => Str::slug($subData['name']['en']) . '-' . Str::random(3),
+                    'description_uz' => $subData['name']['uz'] . ' to\'plami',
+                    'description_ru' => 'Коллекция ' . $subData['name']['ru'],
+                    'description_eng' => 'Collection of ' . $subData['name']['en'],
+                    'image' => $subData['image'],
+                    'is_active' => true,
+                    'sort_order' => $subOrder++,
+                ]);
+
+                $this->createProducts($faker, $sub->id, 20, $subData['name'], $subData['image']);
+            }
+        }
+    }
+
+    private function createProducts($faker, $subcatalogId, $count, $subName, $imageUrl)
+    {
+        for ($k = 0; $k < $count; $k++) {
+            $adjEn = $faker->randomElement(['Premium', 'Deluxe', 'New', 'Pro', 'Classic', 'Essential', 'Ultra', 'Smart', 'Eco', 'Luxury']);
+            $adjRu = $faker->randomElement(['Премиум', 'Делюкс', 'Новый', 'Про', 'Классический', 'Базовый', 'Ультра', 'Смарт', 'Эко', 'Люкс']);
+            $adjUz = $faker->randomElement(['Premium', 'Deluks', 'Yangi', 'Pro', 'Klassik', 'Asosiy', 'Ultra', 'Aqlli', 'Eko', 'Lyuks']);
+
+            $nounEn = Str::singular($subName['en']);
+            $nounRu = $subName['ru']; // Approximate
+            $nounUz = $subName['uz'];
+
+            $code = $faker->regexify('[A-Z]{2}-[0-9]{3}');
+
+            $nameEn = "$adjEn $nounEn $code";
+            $nameRu = "$adjRu $nounRu $code";
+            $nameUz = "$adjUz $nounUz $code";
+            
+            Product::create([
+                'subcatalog_id' => $subcatalogId,
+                'name_uz' => $nameUz,
+                'name_ru' => $nameRu,
+                'name_eng' => $nameEn,
+                'slug' => Str::slug($nameEn) . '-' . Str::random(5),
+                'short_description_uz' => 'Mahsulot uchun o\'zbek tilida qisqacha tavsif.',
+                'short_description_ru' => 'Краткое описание на русском языке для продукта.',
+                'short_description_eng' => $faker->sentence(10),
+                'description_uz' => '<p>Mahsulotning to\'liq tavsifi o\'zbek tilida.</p>',
+                'description_ru' => '<p>Полное описание продукта на русском языке.</p>',
+                'description_eng' => '<p>' . implode('</p><p>', $faker->paragraphs(2)) . '</p>',
+                'price' => $faker->randomFloat(2, 10, 900),
+                'old_price' => $faker->boolean(40) ? $faker->randomFloat(2, 950, 1200) : null,
+                'stock' => $faker->numberBetween(10, 100),
+                'image' => $imageUrl, 
+                'is_featured' => $faker->boolean(15),
+            ]);
         }
     }
 }
-
