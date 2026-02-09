@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import api from "../api/axios";
 import { message } from "antd";
+import { t } from "i18next";
 
 interface User {
   id: number;
@@ -56,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("user", JSON.stringify(user));
       setToken(token);
       setUser(user);
-      message.success("Logged in successfully");
+      message.success(t("login.success"));
     } catch (error: any) {
       message.error(error.response?.data?.message || "Login failed");
       throw error;
@@ -82,9 +83,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("user", JSON.stringify(user));
       setToken(token);
       setUser(user);
-      message.success("Registered successfully");
+      message.success(t("register.success"));
     } catch (error: any) {
-      message.error(error.response?.data?.message || "Registration failed");
       throw error;
     }
   };

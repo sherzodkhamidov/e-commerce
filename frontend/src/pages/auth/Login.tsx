@@ -1,34 +1,79 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Form, Input, Button, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import {
-  UserOutlined,
+  MailOutlined,
   LockOutlined,
   LoginOutlined,
   ExclamationCircleOutlined,
-  LoadingOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import "./Auth.css";
+import { useTranslation } from "react-i18next";
+import UzbFlag from "../../assets/flags/uzbekistan.png";
+import RuFlag from "../../assets/flags/russia.png";
+import EnFlag from "../../assets/flags/english.png";
+
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t, i18n } = useTranslation();
+  const [form] = Form.useForm();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const changeLanguage = ({ key }: { key: string }) => {
+    i18n.changeLanguage(key);
+  };
+
+  const getLanguageFlag = () => {
+    switch (i18n.language) {
+      case "en":
+        return EnFlag;
+      case "ru":
+        return RuFlag;
+      case "uz":
+        return UzbFlag;
+      default:
+        return EnFlag;
+    }
+  };
+
+  const languageItems: MenuProps["items"] = [
+    {
+      key: "en",
+      label: "English",
+      icon: <img src={EnFlag} alt="EN" className="auth-flag-icon" />,
+    },
+    {
+      key: "ru",
+      label: "Русский",
+      icon: <img src={RuFlag} alt="RU" className="auth-flag-icon" />,
+    },
+    {
+      key: "uz",
+      label: "O'zbek",
+      icon: <img src={UzbFlag} alt="UZ" className="auth-flag-icon" />,
+    },
+  ];
+
+  const handleSubmit = async (values: LoginFormValues) => {
     setError("");
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      await login(values.email, values.password);
       navigate("/");
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Invalid credentials");
+      setError(error.response?.data?.message || t("login.invalidCredentials"));
     } finally {
       setIsLoading(false);
     }
@@ -36,10 +81,20 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <div className="auth-background">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-        <div className="shape shape-3"></div>
+      <div className="auth-background"></div>
+
+      <div className="auth-language-selector">
+        <Dropdown menu={{ items: languageItems, onClick: changeLanguage }}>
+          <Button type="text" className="auth-language-btn">
+            <img
+              src={getLanguageFlag()}
+              alt={i18n.language}
+              className="auth-flag-icon"
+            />
+            {i18n.language.toUpperCase()}
+            <DownOutlined style={{ fontSize: 10 }} />
+          </Button>
+        </Dropdown>
       </div>
 
       <div className="auth-card">
@@ -47,69 +102,71 @@ export default function Login() {
           <div className="auth-logo">
             <LoginOutlined />
           </div>
-          <h1>Welcome back</h1>
-          <p>Sign in to your account to continue</p>
+          <h1>{t("login.login_page_title")}</h1>
+          <p>{t("login.login_page_description")}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && (
-            <div className="error-message">
-              <ExclamationCircleOutlined />
-              {error}
-            </div>
-          )}
-
-          <div className="form-group">
-            <label htmlFor="email">Email address</label>
-            <div className="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                autoComplete="email"
-              />
-              <span className="input-icon">
-                <UserOutlined />
-              </span>
-            </div>
+        {error && (
+          <div className="error-message">
+            <ExclamationCircleOutlined />
+            {error}
           </div>
+        )}
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <div className="input-wrapper">
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="current-password"
-              />
-              <span className="input-icon">
-                <LockOutlined />
-              </span>
-            </div>
-          </div>
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+          className="auth-form"
+        >
+          <Form.Item
+            name="email"
+            label={t("login.email")}
+            rules={[
+              { required: true, message: t("login.field_required") },
+              { type: "email", message: t("login.emailInvalid") },
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              placeholder="email@example.com"
+              size="large"
+              autoComplete="email"
+            />
+          </Form.Item>
 
-          <button type="submit" className="submit-button" disabled={isLoading}>
-            {isLoading ? (
-              <LoadingOutlined spin />
-            ) : (
-              <>
-                Sign in
-                <LoginOutlined />
-              </>
-            )}
-          </button>
+          <Form.Item
+            name="password"
+            label={t("login.password")}
+            rules={[{ required: true, message: t("login.field_required") }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="••••••••"
+              size="large"
+              autoComplete="current-password"
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+              block
+              size="large"
+              className="submit-button"
+              icon={<LoginOutlined />}
+            >
+              {t("login.signIn")}
+            </Button>
+          </Form.Item>
 
           <p className="auth-link">
-            Don't have an account? <Link to="/register">Sign up</Link>
+            {t("login.dontHaveAccount")}{" "}
+            <Link to="/register">{t("login.signUp")}</Link>
           </p>
-        </form>
+        </Form>
       </div>
     </div>
   );

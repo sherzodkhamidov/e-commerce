@@ -270,8 +270,10 @@
     "notificationsDesc": "Receive order updates and promotions"
   },
   "login": {
-    "title": "Welcome back",
-    "subtitle": "Sign in to your account to continue",
+    "login_page_title": "Login",
+    "field_required": "This field is required",
+    "emailInvalid": "Invalid format of email",
+    "login_page_description": "Sign in to your account to continue",
     "email": "Email address",
     "password": "Password",
     "emailPlaceholder": "you@example.com",
@@ -280,11 +282,18 @@
     "dontHaveAccount": "Don't have an account?",
     "signUp": "Sign Up",
     "invalidCredentials": "Invalid credentials",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+        "success": "You logged in to system"
+
   },
   "register": {
     "title": "Create an account",
     "subtitle": "Sign up to get started",
+    "emailInvalid": "Invalid format of email",
+
+    "field_required": "This field is required",
+    "emailAlreadyExists": "This email already exists",
+    "success": "You have successfully registered",
     "name": "Full Name",
     "email": "Email address",
     "password": "Password",

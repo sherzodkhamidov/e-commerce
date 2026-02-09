@@ -270,8 +270,10 @@
     "notificationsDesc": "Buyurtma yangilanishlari va aksiyalarni olish"
   },
   "login": {
-    "title": "Xush kelibsiz",
-    "subtitle": "Davom etish uchun hisobingizga kiring",
+    "login_page_title": "Tizimga kirish",
+    "field_required": "Bu maydon majburiy",
+    "emailInvalid": "Noto'g'ri format",
+    "login_page_description": "Davom etish uchun hisobingizga kiring",
     "email": "Elektron pochta manzili",
     "password": "Parol",
     "emailPlaceholder": "you@example.com",
@@ -280,10 +282,14 @@
     "dontHaveAccount": "Hisobingiz yo'qmi?",
     "signUp": "Ro'yxatdan o'tish",
     "invalidCredentials": "Noto'g'ri ma'lumotlar",
-    "forgotPassword": "Parolni unutdingizmi?"
+    "forgotPassword": "Parolni unutdingizmi?",
+    "success": "Siz tizimga kirdingiz"
   },
   "register": {
     "title": "Hisob yaratish",
+    "field_required": "Bu maydon majburiy",
+    "emailInvalid": "Noto'g'ri format",
+    "emailAlreadyExists": "Bu elektron pochta manzili allaqachon mavjud",
     "subtitle": "Boshlash uchun ro'yxatdan o'ting",
     "name": "To'liq ism",
     "email": "Elektron pochta manzili",
@@ -297,7 +303,8 @@
     "alreadyHaveAccount": "Allaqachon hisobingiz bormi?",
     "signIn": "Kirish",
     "passwordsDoNotMatch": "Parollar mos kelmaydi",
-    "passwordTooShort": "Parol kamida 8 belgidan iborat bo'lishi kerak"
+    "passwordTooShort": "Parol kamida 8 belgidan iborat bo'lishi kerak",
+    "success": "Siz muvoffaqiyatli ro'yxatdan o'tdingiz"
   },
   "modal": {
     "signOut": "Chiqish",
@@ -326,4 +333,3 @@
     "rights": "Barcha huquqlar himoyalangan."
   }
 }
-

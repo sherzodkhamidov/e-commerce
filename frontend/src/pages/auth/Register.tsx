@@ -1,45 +1,83 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Form, Input, Button, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   LockOutlined,
   UserAddOutlined,
   ExclamationCircleOutlined,
-  LoadingOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import "./Auth.css";
+import { useTranslation } from "react-i18next";
+import UzbFlag from "../../assets/flags/uzbekistan.png";
+import RuFlag from "../../assets/flags/russia.png";
+import EnFlag from "../../assets/flags/english.png";
+
+interface RegisterFormValues {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { t, i18n } = useTranslation();
+  const [form] = Form.useForm();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const changeLanguage = ({ key }: { key: string }) => {
+    i18n.changeLanguage(key);
+  };
+
+  const getLanguageFlag = () => {
+    switch (i18n.language) {
+      case "en":
+        return EnFlag;
+      case "ru":
+        return RuFlag;
+      case "uz":
+        return UzbFlag;
+      default:
+        return EnFlag;
+    }
+  };
+
+  const languageItems: MenuProps["items"] = [
+    {
+      key: "en",
+      label: "English",
+      icon: <img src={EnFlag} alt="EN" className="auth-flag-icon" />,
+    },
+    {
+      key: "ru",
+      label: "Русский",
+      icon: <img src={RuFlag} alt="RU" className="auth-flag-icon" />,
+    },
+    {
+      key: "uz",
+      label: "O'zbek",
+      icon: <img src={UzbFlag} alt="UZ" className="auth-flag-icon" />,
+    },
+  ];
+
+  const handleSubmit = async (values: RegisterFormValues) => {
     setError("");
-
-    if (password !== passwordConfirmation) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      await register(name, email, password, passwordConfirmation);
+      await register(
+        values.name,
+        values.email,
+        values.password,
+        values.passwordConfirmation,
+      );
       navigate("/");
     } catch (err: unknown) {
       const error = err as {
@@ -49,9 +87,19 @@ export default function Register() {
       };
       if (error.response?.data?.errors) {
         const firstError = Object.values(error.response.data.errors)[0];
-        setError(firstError?.[0] || "Registration failed");
+        if (firstError?.[0] === "The email has already been taken.") {
+          setError(t("register.emailAlreadyExists"));
+        } else {
+          setError(firstError?.[0] || "Registration failed");
+        }
       } else {
-        setError(error.response?.data?.message || "Registration failed");
+        if (
+          error.response?.data?.message === "The email has already been taken."
+        ) {
+          setError(t("register.emailAlreadyExists"));
+        } else {
+          setError("Registration failed");
+        }
       }
     } finally {
       setIsLoading(false);
@@ -60,10 +108,20 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-background">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-        <div className="shape shape-3"></div>
+      <div className="auth-background"></div>
+
+      <div className="auth-language-selector">
+        <Dropdown menu={{ items: languageItems, onClick: changeLanguage }}>
+          <Button type="text" className="auth-language-btn">
+            <img
+              src={getLanguageFlag()}
+              alt={i18n.language}
+              className="auth-flag-icon"
+            />
+            {i18n.language.toUpperCase()}
+            <DownOutlined style={{ fontSize: 10 }} />
+          </Button>
+        </Dropdown>
       </div>
 
       <div className="auth-card">
@@ -71,105 +129,119 @@ export default function Register() {
           <div className="auth-logo">
             <UserAddOutlined />
           </div>
-          <h1>Create account</h1>
-          <p>Sign up to get started</p>
+          <h1>{t("register.title")}</h1>
+          <p>{t("register.subtitle")}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && (
-            <div className="error-message">
-              <ExclamationCircleOutlined />
-              {error}
-            </div>
-          )}
-
-          <div className="form-group">
-            <label htmlFor="name">Full name</label>
-            <div className="input-wrapper">
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                required
-                autoComplete="name"
-              />
-              <span className="input-icon">
-                <UserOutlined />
-              </span>
-            </div>
+        {error && (
+          <div className="error-message">
+            <ExclamationCircleOutlined />
+            {error}
           </div>
+        )}
 
-          <div className="form-group">
-            <label htmlFor="email">Email address</label>
-            <div className="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                autoComplete="email"
-              />
-              <span className="input-icon">
-                <MailOutlined />
-              </span>
-            </div>
-          </div>
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+          className="auth-form"
+        >
+          <Form.Item
+            name="name"
+            label={t("register.name")}
+            rules={[
+              { required: true, message: t("register.field_required") },
+              { min: 2, message: t("register.nameTooShort") },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined />}
+              placeholder={t("register.namePlaceholder")}
+              size="large"
+              autoComplete="name"
+            />
+          </Form.Item>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <div className="input-wrapper">
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="new-password"
-              />
-              <span className="input-icon">
-                <LockOutlined />
-              </span>
-            </div>
-          </div>
+          <Form.Item
+            name="email"
+            label={t("register.email")}
+            rules={[
+              { required: true, message: t("register.field_required") },
+              { type: "email", message: t("register.emailInvalid") },
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              placeholder="email@example.com"
+              size="large"
+              autoComplete="email"
+            />
+          </Form.Item>
 
-          <div className="form-group">
-            <label htmlFor="password_confirmation">Confirm password</label>
-            <div className="input-wrapper">
-              <input
-                type="password"
-                id="password_confirmation"
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="new-password"
-              />
-              <span className="input-icon">
-                <LockOutlined />
-              </span>
-            </div>
-          </div>
+          <Form.Item
+            name="password"
+            label={t("register.password")}
+            rules={[
+              { required: true, message: t("register.field_required") },
+              { min: 8, message: t("register.passwordTooShort") },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="••••••••"
+              size="large"
+              autoComplete="new-password"
+            />
+          </Form.Item>
 
-          <button type="submit" className="submit-button" disabled={isLoading}>
-            {isLoading ? (
-              <LoadingOutlined spin />
-            ) : (
-              <>
-                Create account
-                <UserAddOutlined />
-              </>
-            )}
-          </button>
+          <Form.Item
+            name="passwordConfirmation"
+            label={t("register.confirmPassword")}
+            dependencies={["password"]}
+            rules={[
+              {
+                required: true,
+                message: t("register.field_required"),
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error(t("register.passwordsDoNotMatch")),
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="••••••••"
+              size="large"
+              autoComplete="new-password"
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+              block
+              size="large"
+              className="submit-button"
+              icon={<UserAddOutlined />}
+            >
+              {t("register.signUp")}
+            </Button>
+          </Form.Item>
 
           <p className="auth-link">
-            Already have an account? <Link to="/login">Sign in</Link>
+            {t("register.alreadyHaveAccount")}{" "}
+            <Link to="/login">{t("register.signIn")}</Link>
           </p>
-        </form>
+        </Form>
       </div>
     </div>
   );
