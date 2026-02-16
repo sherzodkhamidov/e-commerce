@@ -1,8 +1,8 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Pagination, Spin, Empty, Skeleton } from "antd";
+import { Button, Pagination, Empty, Skeleton } from "antd";
 import api from "../../api/axios";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";

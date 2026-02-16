@@ -8,7 +8,6 @@ import {
   BgColorsOutlined,
   GlobalOutlined,
   LogoutOutlined,
-  CloseOutlined,
   CheckOutlined,
   RightOutlined,
 } from "@ant-design/icons";

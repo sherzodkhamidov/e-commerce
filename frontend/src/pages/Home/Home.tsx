@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
-import { Spin } from "antd";
 import api from "../../api/axios";
 import { type Catalog, type Product } from "./types";
-import {
-  HeroSection,
-  CategoriesSection,
-  FeaturedProducts,
-  FeaturesSection,
-} from "./components";
+import { HeroSection, CategoriesSection, FeaturesSection } from "./components";
 import "./Home.css";
 
 export default function Home() {
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [_, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
