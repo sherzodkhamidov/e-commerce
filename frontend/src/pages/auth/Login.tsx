@@ -9,6 +9,7 @@ import {
   LoginOutlined,
   ExclamationCircleOutlined,
   DownOutlined,
+  GoogleOutlined,
 } from "@ant-design/icons";
 import "./Auth.css";
 import { useTranslation } from "react-i18next";
@@ -25,7 +26,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
 
@@ -77,6 +78,10 @@ export default function Login() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    loginWithGoogle();
   };
 
   return (
@@ -161,6 +166,21 @@ export default function Login() {
               {t("login.signIn")}
             </Button>
           </Form.Item>
+
+          <div className="auth-divider">
+            <span>{t("login.continueWith")}</span>
+          </div>
+
+          <Button
+            type="default"
+            onClick={handleGoogleLogin}
+            block
+            size="large"
+            className="google-button"
+            icon={<GoogleOutlined />}
+          >
+            {t("login.signInWithGoogle")}
+          </Button>
 
           <p className="auth-link">
             {t("login.dontHaveAccount")}{" "}

@@ -283,7 +283,9 @@
     "signUp": "Ro'yxatdan o'tish",
     "invalidCredentials": "Noto'g'ri ma'lumotlar",
     "forgotPassword": "Parolni unutdingizmi?",
-    "success": "Siz tizimga kirdingiz"
+    "success": "Siz tizimga kirdingiz",
+    "continueWith": "yoki davom eting",
+    "signInWithGoogle": "Google orqali kirish"
   },
   "register": {
     "title": "Hisob yaratish",
@@ -304,7 +306,21 @@
     "signIn": "Kirish",
     "passwordsDoNotMatch": "Parollar mos kelmaydi",
     "passwordTooShort": "Parol kamida 8 belgidan iborat bo'lishi kerak",
-    "success": "Siz muvoffaqiyatli ro'yxatdan o'tdingiz"
+    "success": "Siz muvoffaqiyatli ro'yxatdan o'tdingiz",
+    "continueWith": "yoki davom eting",
+    "signUpWithGoogle": "Google orqali ro'yxatdan o'tish",
+    "nameTooShort": "Ism kamida 2 belgidan iborat bo'lishi kerak"
+  },
+  "setPassword": {
+    "title": "Parolni o'rnating",
+    "subtitle": "Hisobingizni saqlash uchun parol yarating",
+    "password": "Parol",
+    "confirmPassword": "Parolni tasdiqlang",
+    "setPassword": "Parolni o'rnatish",
+    "success": "Parol muvaffaqiyatli o'rnatildi!",
+    "field_required": "Bu maydon majburiy",
+    "passwordTooShort": "Parol kamida 8 belgidan iborat bo'lishi kerak",
+    "passwordsDoNotMatch": "Parollar mos kelmaydi"
   },
   "modal": {
     "signOut": "Chiqish",

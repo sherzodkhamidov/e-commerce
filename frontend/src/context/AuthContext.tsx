@@ -8,15 +8,23 @@ interface User {
   id: number;
   name: string;
   email: string;
+  avatar?: string;
+  needs_password?: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => void;
   register: (
     name: string,
     email: string,
+    password: string,
+    password_confirmation: string,
+  ) => Promise<void>;
+  registerWithGoogle: () => void;
+  setPassword: (
     password: string,
     password_confirmation: string,
   ) => Promise<void>;
@@ -121,6 +129,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+    window.location.href = `${apiUrl}/auth/google`;
+  };
+
+  const registerWithGoogle = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+    window.location.href = `${apiUrl}/auth/google`;
+  };
+
+  const setPassword = async (
+    password: string,
+    password_confirmation: string,
+  ) => {
+    try {
+      const response = await api.post("/user/set-password", {
+        password,
+        password_confirmation,
+      });
+
+      const updatedUser = response.data.user;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      message.success(t("setPassword.success"));
+    } catch (error: any) {
+      message.error(error.response?.data?.message || "Failed to set password");
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await api.post("/logout");
@@ -140,7 +178,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         token,
         login,
+        loginWithGoogle,
         register,
+        registerWithGoogle,
+        setPassword,
         updateProfile,
         updatePassword,
         logout,

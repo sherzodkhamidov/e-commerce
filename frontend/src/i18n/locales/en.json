@@ -283,8 +283,9 @@
     "signUp": "Sign Up",
     "invalidCredentials": "Invalid credentials",
     "forgotPassword": "Forgot password?",
-        "success": "You logged in to system"
-
+    "success": "You logged in to system",
+    "continueWith": "or continue with",
+    "signInWithGoogle": "Sign in with Google"
   },
   "register": {
     "title": "Create an account",
@@ -306,7 +307,21 @@
     "alreadyHaveAccount": "Already have an account?",
     "signIn": "Sign In",
     "passwordsDoNotMatch": "Passwords do not match",
-    "passwordTooShort": "Password must be at least 8 characters"
+    "passwordTooShort": "Password must be at least 8 characters",
+    "nameTooShort": "Name must be at least 2 characters",
+    "continueWith": "or continue with",
+    "signUpWithGoogle": "Sign up with Google"
+  },
+  "setPassword": {
+    "title": "Set Your Password",
+    "subtitle": "Create a password to secure your account",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "setPassword": "Set Password",
+    "success": "Password set successfully!",
+    "field_required": "This field is required",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsDoNotMatch": "Passwords do not match"
   },
   "modal": {
     "signOut": "Sign Out",

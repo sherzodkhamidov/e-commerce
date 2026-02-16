@@ -11,11 +11,16 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Google OAuth routes
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
 Route::middleware('auth:sanctum')->group(function () {
     // User
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user/profile', [AuthController::class, 'updateProfile']);
     Route::put('/user/password', [AuthController::class, 'updatePassword']);
+    Route::post('/user/set-password', [AuthController::class, 'setPassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Wishlist

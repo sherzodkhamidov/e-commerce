@@ -10,6 +10,7 @@ import {
   UserAddOutlined,
   ExclamationCircleOutlined,
   DownOutlined,
+  GoogleOutlined,
 } from "@ant-design/icons";
 import "./Auth.css";
 import { useTranslation } from "react-i18next";
@@ -28,7 +29,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, registerWithGoogle } = useAuth();
   const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
 
@@ -104,6 +105,10 @@ export default function Register() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleRegister = () => {
+    registerWithGoogle();
   };
 
   return (
@@ -236,6 +241,21 @@ export default function Register() {
               {t("register.signUp")}
             </Button>
           </Form.Item>
+
+          <div className="auth-divider">
+            <span>{t("register.continueWith")}</span>
+          </div>
+
+          <Button
+            type="default"
+            onClick={handleGoogleRegister}
+            block
+            size="large"
+            className="google-button"
+            icon={<GoogleOutlined />}
+          >
+            {t("register.signUpWithGoogle")}
+          </Button>
 
           <p className="auth-link">
             {t("register.alreadyHaveAccount")}{" "}

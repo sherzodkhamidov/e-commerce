@@ -283,7 +283,9 @@
     "signUp": "Зарегистрироваться",
     "invalidCredentials": "Неверные учетные данные",
     "forgotPassword": "Забыли пароль?",
-    "success": "Вы успешно вошли в систему"
+    "success": "Вы успешно вошли в систему",
+    "continueWith": "или продолжить с",
+    "signInWithGoogle": "Войти через Google"
   },
   "register": {
     "title": "Создать аккаунт",
@@ -304,7 +306,21 @@
     "alreadyHaveAccount": "Уже есть аккаунт?",
     "signIn": "Войти",
     "passwordsDoNotMatch": "Пароли не совпадают",
-    "passwordTooShort": "Пароль должен содержать не менее 8 символов"
+    "passwordTooShort": "Пароль должен содержать не менее 8 символов",
+    "continueWith": "или продолжить с",
+    "signUpWithGoogle": "Зарегистрироваться через Google",
+    "nameTooShort": "Имя должно содержать не менее 2 символов"
+  },
+  "setPassword": {
+    "title": "Установите пароль",
+    "subtitle": "Создайте пароль для защиты вашего аккаунта",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "setPassword": "Установить пароль",
+    "success": "Пароль успешно установлен!",
+    "field_required": "Это поле обязательно",
+    "passwordTooShort": "Пароль должен содержать не менее 8 символов",
+    "passwordsDoNotMatch": "Пароли не совпадают"
   },
   "modal": {
     "signOut": "Выйти",

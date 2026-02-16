@@ -14,6 +14,8 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Layout from "./components/Layout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import SetPassword from "./pages/auth/SetPassword";
+import GoogleCallback from "./pages/auth/GoogleCallback";
 import Home from "./pages/Home/Home";
 import Shop from "./pages/Shop/Shop";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
@@ -89,6 +91,18 @@ function App() {
                       <Register />
                     </PublicRoute>
                   }
+                />
+                <Route
+                  path="/set-password"
+                  element={
+                    <PrivateRoute>
+                      <SetPassword />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/auth/google/callback"
+                  element={<GoogleCallback />}
                 />
                 <Route element={<Layout />}>
                   <Route path="/" element={<Home />} />
